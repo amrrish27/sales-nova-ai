@@ -51,7 +51,7 @@ export const sendChatMessage = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) {
-      return { error: "AI service is not configured. Please contact support." as const };
+      return { error: "AI service is not configured. Please contact support." };
     }
 
     const { supabase, userId } = context;
@@ -70,7 +70,7 @@ export const sendChatMessage = createServerFn({ method: "POST" })
         .select("id")
         .single();
       if (convErr || !conv) {
-        return { error: `Failed to create conversation: ${convErr?.message ?? "unknown"}` as const };
+        return { error: `Failed to create conversation: ${convErr?.message ?? "unknown"}` };
       }
       conversationId = conv.id;
     }
@@ -83,7 +83,7 @@ export const sendChatMessage = createServerFn({ method: "POST" })
       content: data.message,
     });
     if (userMsgErr) {
-      return { error: `Failed to save message: ${userMsgErr.message}` as const };
+      return { error: `Failed to save message: ${userMsgErr.message}` };
     }
 
     // Generate assistant reply
@@ -102,7 +102,7 @@ export const sendChatMessage = createServerFn({ method: "POST" })
       const msg = err instanceof Error ? err.message : "AI request failed";
       const status = (err as { statusCode?: number }).statusCode;
       if (status === 429) {
-        return { error: "AI is rate limited. Please wait a moment and try again." as const };
+        return { error: "AI is rate limited. Please wait a moment and try again." };
       }
       if (status === 402) {
         return {
@@ -110,7 +110,7 @@ export const sendChatMessage = createServerFn({ method: "POST" })
             "Workspace AI credits are exhausted. Add credits in Settings → Workspace → Usage." as const,
         };
       }
-      return { error: msg as const };
+      return { error: msg };
     }
 
     // Persist assistant reply
