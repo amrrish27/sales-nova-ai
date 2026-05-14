@@ -14,7 +14,181 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      conversations: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          id: string
+          intent: string | null
+          lead_score: number
+          owner_id: string
+          sentiment: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          intent?: string | null
+          lead_score?: number
+          owner_id: string
+          sentiment?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          intent?: string | null
+          lead_score?: number
+          owner_id?: string
+          sentiment?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          budget: number | null
+          company: string | null
+          created_at: string
+          email: string | null
+          id: string
+          intent: string | null
+          last_contact_at: string | null
+          lead_score: number
+          name: string
+          notes: string | null
+          owner_id: string
+          phone: string | null
+          sentiment: string | null
+          status: Database["public"]["Enums"]["lead_status"]
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          budget?: number | null
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          intent?: string | null
+          last_contact_at?: string | null
+          lead_score?: number
+          name: string
+          notes?: string | null
+          owner_id: string
+          phone?: string | null
+          sentiment?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          budget?: number | null
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          intent?: string | null
+          last_contact_at?: string | null
+          lead_score?: number
+          name?: string
+          notes?: string | null
+          owner_id?: string
+          phone?: string | null
+          sentiment?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          owner_id: string
+          role: Database["public"]["Enums"]["message_role"]
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          owner_id: string
+          role: Database["public"]["Enums"]["message_role"]
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          owner_id?: string
+          role?: Database["public"]["Enums"]["message_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          business_name: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          business_name?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          business_name?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +197,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      app_role: "business_owner" | "team_member" | "customer"
+      lead_status:
+        | "new"
+        | "contacted"
+        | "qualified"
+        | "proposal"
+        | "won"
+        | "lost"
+      message_role: "user" | "assistant" | "system"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +332,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["business_owner", "team_member", "customer"],
+      lead_status: ["new", "contacted", "qualified", "proposal", "won", "lost"],
+      message_role: ["user", "assistant", "system"],
+    },
   },
 } as const
