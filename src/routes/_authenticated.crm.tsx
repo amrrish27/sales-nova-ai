@@ -195,6 +195,7 @@ function CrmPage() {
           </table>
         )}
       </div>
+      )}
 
       {showNew && <NewLeadModal onClose={() => setShowNew(false)} />}
     </div>
