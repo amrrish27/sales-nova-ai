@@ -39,6 +39,8 @@ function LoginPage() {
 
   return (
     <AuthShell title="Sign in" subtitle="Welcome back to Sellora AI">
+      <GoogleAuthButton redirect={search.redirect ?? "/dashboard"} />
+      <AuthDivider />
       <form onSubmit={handleSubmit} className="space-y-4">
         <Field label="Email">
           <input
