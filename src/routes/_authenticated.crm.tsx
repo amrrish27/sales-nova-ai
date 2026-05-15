@@ -106,11 +106,32 @@ function CrmPage() {
         >
           <option value="all">All statuses</option>
           {STATUSES.map((s) => (
-            <option key={s} value={s}>{s}</option>
+            <option key={s} value={s}>{STATUS_LABEL[s]}</option>
           ))}
         </select>
+        <div className="inline-flex rounded-lg bg-white/5 border border-white/10 p-0.5">
+          <button
+            onClick={() => setView("table")}
+            className={"rounded-md px-3 py-1.5 text-xs inline-flex items-center gap-1.5 " + (view === "table" ? "bg-white/10" : "text-muted-foreground")}
+          >
+            <List className="h-3.5 w-3.5" /> Table
+          </button>
+          <button
+            onClick={() => setView("kanban")}
+            className={"rounded-md px-3 py-1.5 text-xs inline-flex items-center gap-1.5 " + (view === "kanban" ? "bg-white/10" : "text-muted-foreground")}
+          >
+            <LayoutGrid className="h-3.5 w-3.5" /> Pipeline
+          </button>
+        </div>
       </div>
 
+      {view === "kanban" ? (
+        <KanbanBoard
+          customers={filtered}
+          isLoading={isLoading}
+          onChangeStatus={(id, status) => updateStatus.mutate({ id, status })}
+        />
+      ) : (
       <div className="glass rounded-2xl overflow-hidden">
         {isLoading ? (
           <div className="p-12 text-center text-sm text-muted-foreground">
