@@ -24,9 +24,33 @@ const ANALYSIS_SCHEMA = z.object({
     .describe("Primary intent of the latest user message"),
   sentiment: z.enum(["positive", "neutral", "negative", "frustrated", "excited"]),
   temperature: z.enum(["hot", "warm", "cold"]),
+  emotion: z
+    .enum(["interested", "curious", "confused", "hesitant", "skeptical", "excited", "ready", "frustrated"])
+    .describe("Current emotional state of the customer"),
+  sales_strategy: z
+    .enum([
+      "trust_building",
+      "educational",
+      "discount_offer",
+      "urgency_close",
+      "upsell",
+      "objection_handling",
+      "competitor_battle",
+      "follow_up_nurture",
+    ])
+    .describe("The optimal next sales strategy the AI should adopt"),
+  buyer_personality: z
+    .enum(["analytical", "impulse", "budget_sensitive", "premium", "skeptical", "relationship_driven"])
+    .describe("Inferred buyer personality archetype"),
+  close_probability_48h: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe("Probability 0-100 that this customer converts within 48 hours"),
   buying_signals: z.array(z.string()).max(6).describe("Concrete signals detected"),
   objections: z.array(z.string()).max(4),
   recommended_action: z.string().describe("One concrete next step the seller should take"),
+  coach_tip: z.string().describe("One short, actionable tip for the human seller right now (max 20 words)"),
   reasoning: z.string().describe("Short justification for the score, 1-2 sentences"),
 });
 
