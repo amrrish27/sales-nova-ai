@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { AuthShell, Field } from "./login";
+import { GoogleAuthButton, AuthDivider } from "@/components/google-auth-button";
 
 export const Route = createFileRoute("/signup")({
   component: SignupPage,
