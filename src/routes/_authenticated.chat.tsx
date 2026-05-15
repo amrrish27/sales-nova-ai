@@ -252,45 +252,80 @@ function ChatPage() {
       </div>
 
       {/* Intelligence panel */}
-      <aside className="hidden xl:flex w-80 shrink-0 border-l border-white/5 bg-background/40 backdrop-blur-xl flex-col">
+      <aside className="hidden xl:flex w-96 shrink-0 border-l border-white/5 bg-background/40 backdrop-blur-xl flex-col">
         <div className="p-5 border-b border-white/5">
           <h3 className="font-semibold flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" /> Live intelligence
+            <Sparkles className="h-4 w-4 text-primary" /> Sales Brain
           </h3>
+          <p className="text-[11px] text-muted-foreground mt-1">Live psychology · strategy · close odds</p>
         </div>
         <div className="p-5 space-y-5 overflow-y-auto">
           {!analysis ? (
             <p className="text-sm text-muted-foreground">
-              Send a message to see Gemini's live lead analysis appear here.
+              Send a message and Sellora's Sales Brain will read the customer's psychology, pick a strategy, and predict close odds — live.
             </p>
           ) : (
             <>
-              <div>
-                <div className="text-xs text-muted-foreground">Lead score</div>
-                <div className="mt-1 flex items-baseline gap-2">
-                  <span className="text-5xl font-semibold gradient-text">{analysis.lead_score}</span>
-                  <span className="text-xs text-muted-foreground">/ 100</span>
-                </div>
-                <div className="mt-2 inline-flex items-center gap-1.5 rounded-full glass px-2.5 py-0.5 text-xs uppercase tracking-wide">
-                  {analysis.temperature} lead
+              {/* Close probability ring */}
+              <div className="glass-strong rounded-2xl p-4">
+                <div className="text-xs text-muted-foreground">Close probability · 48h</div>
+                <div className="mt-2 flex items-center gap-4">
+                  <ProbRing value={analysis.close_probability_48h} />
+                  <div className="text-xs text-muted-foreground leading-relaxed">
+                    {analysis.close_probability_48h >= 70
+                      ? "High intent — push to close now."
+                      : analysis.close_probability_48h >= 40
+                      ? "Warming up — keep nurturing."
+                      : "Long horizon — capture and follow up."}
+                  </div>
                 </div>
               </div>
-              <Field label="Intent" value={analysis.intent} />
-              <Field label="Sentiment" value={analysis.sentiment} />
+
+              <div className="grid grid-cols-2 gap-3">
+                <Stat label="Lead score" value={`${analysis.lead_score}`} accent />
+                <Stat label="Temp" value={analysis.temperature} />
+              </div>
+
+              {/* Sales strategy */}
               <div>
-                <div className="text-xs text-muted-foreground mb-2">Buying signals</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {analysis.buying_signals.length === 0 ? (
-                    <span className="text-xs text-muted-foreground">none yet</span>
-                  ) : (
-                    analysis.buying_signals.map((s) => (
+                <div className="text-xs text-muted-foreground mb-1.5">Active sales strategy</div>
+                <div className="rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 px-3 py-2 text-sm font-medium capitalize">
+                  {analysis.sales_strategy.replace(/_/g, " ")}
+                </div>
+              </div>
+
+              {/* Digital twin */}
+              <div className="glass rounded-xl p-3">
+                <div className="text-xs text-muted-foreground">Customer digital twin</div>
+                <div className="mt-1 text-sm font-medium capitalize">
+                  {analysis.buyer_personality.replace(/_/g, " ")} buyer
+                </div>
+                <div className="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+                  <Tag label="Emotion" value={analysis.emotion} />
+                  <Tag label="Intent" value={analysis.intent} />
+                  <Tag label="Sentiment" value={analysis.sentiment} />
+                </div>
+              </div>
+
+              {/* Coach tip */}
+              <div className="glass-strong rounded-xl p-3 border-l-2 border-accent">
+                <div className="text-[11px] uppercase tracking-wide text-accent">AI Sales Coach</div>
+                <p className="mt-1 text-sm leading-relaxed">{analysis.coach_tip}</p>
+              </div>
+
+              {analysis.buying_signals.length > 0 && (
+                <div>
+                  <div className="text-xs text-muted-foreground mb-2">Buying signals</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {analysis.buying_signals.map((s) => (
                       <span key={s} className="rounded-full bg-success/15 text-success px-2 py-0.5 text-[11px]">
                         {s}
                       </span>
-                    ))
-                  )}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
+
               {analysis.objections.length > 0 && (
                 <div>
                   <div className="text-xs text-muted-foreground mb-2">Objections</div>
@@ -303,10 +338,12 @@ function ChatPage() {
                   </div>
                 </div>
               )}
+
               <div className="glass rounded-xl p-3">
                 <div className="text-xs text-muted-foreground">Recommended next step</div>
                 <p className="mt-1 text-sm">{analysis.recommended_action}</p>
               </div>
+
               <p className="text-xs text-muted-foreground italic">{analysis.reasoning}</p>
             </>
           )}
@@ -316,11 +353,49 @@ function ChatPage() {
   );
 }
 
-function Field({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div>
-      <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="mt-1 text-sm capitalize">{value.replace(/_/g, " ")}</div>
+    <div className="glass rounded-xl p-3">
+      <div className="text-[11px] text-muted-foreground">{label}</div>
+      <div className={"mt-0.5 text-2xl font-semibold capitalize " + (accent ? "gradient-text" : "")}>{value}</div>
+    </div>
+  );
+}
+
+function Tag({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md bg-white/5 px-2 py-1">
+      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className="text-xs capitalize">{value.replace(/_/g, " ")}</div>
+    </div>
+  );
+}
+
+function ProbRing({ value }: { value: number }) {
+  const r = 28;
+  const c = 2 * Math.PI * r;
+  const offset = c - (value / 100) * c;
+  const color = value >= 70 ? "hsl(var(--success))" : value >= 40 ? "hsl(var(--accent))" : "hsl(var(--muted-foreground))";
+  return (
+    <div className="relative h-20 w-20 shrink-0">
+      <svg className="h-20 w-20 -rotate-90" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r={r} stroke="rgba(255,255,255,0.08)" strokeWidth="6" fill="none" />
+        <circle
+          cx="32"
+          cy="32"
+          r={r}
+          stroke={color}
+          strokeWidth="6"
+          fill="none"
+          strokeDasharray={c}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          style={{ transition: "stroke-dashoffset 0.6s ease" }}
+        />
+      </svg>
+      <div className="absolute inset-0 grid place-items-center">
+        <div className="text-lg font-semibold">{Math.round(value)}%</div>
+      </div>
     </div>
   );
 }
