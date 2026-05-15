@@ -162,7 +162,7 @@ function ChatPage() {
             <Sparkles className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h1 className="font-semibold leading-none">Sellora AI AI</h1>
+            <h1 className="font-semibold leading-none">Sellora AI</h1>
             <p className="text-xs text-muted-foreground mt-0.5">Live · Gemini-powered</p>
           </div>
         </header>
