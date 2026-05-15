@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "SalesNova — AI Sales Assistant That Closes Deals" },
+      { title: "Sellora AI — AI Sales Assistant That Closes Deals" },
       {
         name: "description",
         content:
@@ -53,7 +53,7 @@ function Nav() {
           <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-primary to-accent">
             <Sparkles className="h-4 w-4 text-white" />
           </div>
-          <span className="text-lg font-semibold tracking-tight">SalesNova</span>
+          <span className="text-lg font-semibold tracking-tight">Sellora AI</span>
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
           <a href="#features" className="hover:text-foreground transition">Features</a>
@@ -106,7 +106,7 @@ function Hero() {
           transition={{ duration: 0.7, delay: 0.15 }}
           className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground"
         >
-          SalesNova qualifies leads, handles objections, recommends products and closes deals — autonomously.
+          Sellora AI qualifies leads, handles objections, recommends products and closes deals — autonomously.
           Plug it into your site, WhatsApp or app and watch conversion rates climb.
         </motion.p>
         <motion.div
@@ -293,7 +293,7 @@ const steps = [
   {
     n: "01",
     title: "Connect your business",
-    desc: "Plug SalesNova into your website, WhatsApp or app in under 2 minutes.",
+    desc: "Plug Sellora AI into your website, WhatsApp or app in under 2 minutes.",
   },
   {
     n: "02",
@@ -316,7 +316,7 @@ function HowItWorks() {
             From visitor to customer in <span className="gradient-text">three steps</span>
           </h2>
           <p className="mt-4 text-muted-foreground">
-            No engineering work. No prompt tuning. SalesNova is opinionated about how great selling looks.
+            No engineering work. No prompt tuning. Sellora AI is opinionated about how great selling looks.
           </p>
         </div>
         <div className="space-y-4">
@@ -405,7 +405,7 @@ function Pricing() {
           Pricing that scales with you
         </h2>
         <p className="mt-4 text-muted-foreground">
-          Start free. Pay only when SalesNova is closing deals for you.
+          Start free. Pay only when Sellora AI is closing deals for you.
         </p>
       </div>
       <div className="mt-12 grid md:grid-cols-3 gap-5">
@@ -458,8 +458,8 @@ function Pricing() {
 
 const faqs = [
   {
-    q: "Is SalesNova a real product or a chatbot wrapper?",
-    a: "Real product. SalesNova is an end-to-end AI sales platform: live conversations, intent scoring, CRM, analytics and automation — all powered by Google Gemini and your own data.",
+    q: "Is Sellora AI a real product or a chatbot wrapper?",
+    a: "Real product. Sellora AI is an end-to-end AI sales platform: live conversations, intent scoring, CRM, analytics and automation — all powered by Google Gemini and your own data.",
   },
   {
     q: "Which AI model do you use?",
@@ -516,7 +516,7 @@ function Footer() {
           <div className="grid h-7 w-7 place-items-center rounded-md bg-gradient-to-br from-primary to-accent">
             <Sparkles className="h-3.5 w-3.5 text-white" />
           </div>
-          <span className="text-sm font-medium">SalesNova</span>
+          <span className="text-sm font-medium">Sellora AI</span>
           <span className="text-xs text-muted-foreground">© {new Date().getFullYear()}</span>
         </div>
         <div className="text-xs text-muted-foreground flex items-center gap-2">

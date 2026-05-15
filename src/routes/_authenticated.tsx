@@ -52,7 +52,7 @@ function Sidebar() {
         <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-primary to-accent">
           <Sparkles className="h-4 w-4 text-white" />
         </div>
-        <span className="font-semibold">SalesNova</span>
+        <span className="font-semibold">Sellora AI</span>
       </Link>
       <nav className="mt-6 flex flex-col gap-1">
         {items.map((it) => {
