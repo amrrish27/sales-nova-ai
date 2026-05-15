@@ -272,3 +272,84 @@ function NewLeadModal({ onClose }: { onClose: () => void }) {
     </div>
   );
 }
+
+type CustomerRow = {
+  id: string;
+  name: string;
+  company: string | null;
+  status: Status;
+  lead_score: number;
+  intent: string | null;
+};
+
+function KanbanBoard({
+  customers,
+  isLoading,
+  onChangeStatus,
+}: {
+  customers: CustomerRow[];
+  isLoading: boolean;
+  onChangeStatus: (id: string, status: Status) => void;
+}) {
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  if (isLoading) {
+    return (
+      <div className="glass rounded-2xl p-12 text-center text-sm text-muted-foreground">
+        <Loader2 className="h-5 w-5 animate-spin inline" /> Loading…
+      </div>
+    );
+  }
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+      {STATUSES.map((status) => {
+        const cards = customers.filter((c) => c.status === status);
+        return (
+          <div
+            key={status}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => {
+              if (draggingId) {
+                onChangeStatus(draggingId, status);
+                setDraggingId(null);
+              }
+            }}
+            className="glass rounded-xl p-3 min-h-[300px] flex flex-col"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-xs font-medium uppercase tracking-wide">{STATUS_LABEL[status]}</div>
+              <span className="text-[10px] text-muted-foreground rounded-full bg-white/5 px-1.5">{cards.length}</span>
+            </div>
+            <div className="space-y-2 flex-1">
+              {cards.map((c) => (
+                <div
+                  key={c.id}
+                  draggable
+                  onDragStart={() => setDraggingId(c.id)}
+                  className="rounded-lg bg-white/5 border border-white/10 p-2.5 text-sm cursor-grab active:cursor-grabbing hover:border-primary/40 transition"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="font-medium truncate">{c.name}</div>
+                    <ScorePill score={c.lead_score} />
+                  </div>
+                  {c.company && (
+                    <div className="text-[11px] text-muted-foreground truncate mt-0.5">{c.company}</div>
+                  )}
+                  {c.intent && (
+                    <div className="mt-2 inline-block rounded-full bg-primary/15 text-primary text-[10px] px-2 py-0.5 capitalize">
+                      {c.intent.replace(/_/g, " ")}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {cards.length === 0 && (
+                <div className="text-[11px] text-muted-foreground text-center py-6 border border-dashed border-white/5 rounded-lg">
+                  Drop here
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
