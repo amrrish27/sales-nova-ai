@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { Plus, Search, Loader2, Trash2 } from "lucide-react";
+import { Plus, Search, Loader2, Trash2, LayoutGrid, List } from "lucide-react";
 import { toast } from "sonner";
 import { ScorePill } from "./_authenticated.dashboard";
 
@@ -12,6 +12,16 @@ export const Route = createFileRoute("/_authenticated/crm")({
 });
 
 const STATUSES = ["new", "contacted", "qualified", "proposal", "won", "lost"] as const;
+type Status = typeof STATUSES[number];
+
+const STATUS_LABEL: Record<Status, string> = {
+  new: "New Lead",
+  contacted: "Contacted",
+  qualified: "Interested",
+  proposal: "Negotiating",
+  won: "Converted",
+  lost: "Lost",
+};
 
 function CrmPage() {
   const { user } = useAuth();
@@ -19,6 +29,7 @@ function CrmPage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showNew, setShowNew] = useState(false);
+  const [view, setView] = useState<"table" | "kanban">("table");
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ["customers", user?.id],
