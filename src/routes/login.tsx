@@ -5,6 +5,7 @@ import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
+import { GoogleAuthButton, AuthDivider } from "@/components/google-auth-button";
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({ redirect: z.string().optional() }),
@@ -37,7 +38,9 @@ function LoginPage() {
   };
 
   return (
-    <AuthShell title="Sign in" subtitle="Welcome back to SalesNova">
+    <AuthShell title="Sign in" subtitle="Welcome back to Sellora AI">
+      <GoogleAuthButton redirect={search.redirect ?? "/dashboard"} />
+      <AuthDivider />
       <form onSubmit={handleSubmit} className="space-y-4">
         <Field label="Email">
           <input
@@ -94,7 +97,7 @@ export function AuthShell({
           <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-primary to-accent">
             <Sparkles className="h-4 w-4 text-white" />
           </div>
-          <span className="text-lg font-semibold">SalesNova</span>
+          <span className="text-lg font-semibold">Sellora AI</span>
         </Link>
         <div className="glass-strong rounded-2xl p-8">
           <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>

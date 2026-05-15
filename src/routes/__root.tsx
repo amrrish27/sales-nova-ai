@@ -58,13 +58,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SalesNova — AI Sales Assistant That Closes Deals" },
+      { title: "Sellora AI — AI Sales Assistant That Closes Deals" },
       {
         name: "description",
         content:
-          "SalesNova is the AI sales employee for modern businesses. Convert leads, handle objections, score intent and close deals — automatically.",
+          "Sellora AI is the AI sales employee for modern businesses. Convert leads, handle objections, score intent and close deals — automatically.",
       },
-      { property: "og:title", content: "SalesNova — AI Sales Assistant" },
+      { property: "og:title", content: "Sellora AI — AI Sales Assistant" },
       { property: "og:description", content: "Your always-on AI sales team. Convert more, do less." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

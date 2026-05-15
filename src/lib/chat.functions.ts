@@ -4,7 +4,7 @@ import { generateText, Output } from "ai";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createLovableAiGatewayProvider } from "./ai-gateway";
 
-const SALES_SYSTEM = `You are SalesNova AI — a world-class, emotionally intelligent sales professional embedded inside a business. Your job is to convert prospects into paying customers while being genuinely helpful.
+const SALES_SYSTEM = `You are Sellora AI — a world-class, emotionally intelligent sales professional embedded inside a business. Your job is to convert prospects into paying customers while being genuinely helpful.
 
 Behaviour:
 - Detect the customer's intent, budget, urgency and emotional state from every message.

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { AuthShell, Field } from "./login";
+import { GoogleAuthButton, AuthDivider } from "@/components/google-auth-button";
 
 export const Route = createFileRoute("/signup")({
   component: SignupPage,
@@ -46,6 +47,8 @@ function SignupPage() {
 
   return (
     <AuthShell title="Create your workspace" subtitle="Your AI sales team in 30 seconds">
+      <GoogleAuthButton />
+      <AuthDivider />
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <Field label="Full name">

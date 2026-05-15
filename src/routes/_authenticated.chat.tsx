@@ -162,7 +162,7 @@ function ChatPage() {
             <Sparkles className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h1 className="font-semibold leading-none">SalesNova AI</h1>
+            <h1 className="font-semibold leading-none">Sellora AI</h1>
             <p className="text-xs text-muted-foreground mt-0.5">Live · Gemini-powered</p>
           </div>
         </header>
@@ -220,7 +220,7 @@ function ChatPage() {
           ))}
           {loading && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" /> SalesNova is thinking…
+              <Loader2 className="h-4 w-4 animate-spin" /> Sellora AI is thinking…
             </div>
           )}
         </div>
@@ -237,7 +237,7 @@ function ChatPage() {
                 }
               }}
               disabled={loading}
-              placeholder="Message SalesNova as a customer…"
+              placeholder="Message Sellora AI as a customer…"
               className="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 disabled:opacity-50"
             />
             <button
