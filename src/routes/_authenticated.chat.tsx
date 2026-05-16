@@ -4,9 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { sendChatMessage, type ConversationAnalysis } from "@/lib/chat.functions";
-import { Send, Loader2, Sparkles, Plus, Bot, User as UserIcon } from "lucide-react";
+import { Send, Loader2, Sparkles, Plus, Bot, User as UserIcon, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 import { ScorePill } from "./_authenticated.dashboard";
+import { useVoiceAgent } from "@/lib/voice-agent";
 
 export const Route = createFileRoute("/_authenticated/chat")({
   component: ChatPage,
