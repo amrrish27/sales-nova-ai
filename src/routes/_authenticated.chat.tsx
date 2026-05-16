@@ -289,6 +289,19 @@ function ChatPage() {
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>
+            {voice.supported && voiceMode && (
+              <button
+                onClick={() => (voice.listening ? voice.stopListening() : voice.startListening())}
+                disabled={loading || voice.speaking}
+                className={
+                  "rounded-xl px-4 text-white disabled:opacity-40 " +
+                  (voice.listening ? "bg-destructive animate-pulse" : "bg-white/10 hover:bg-white/20")
+                }
+                title={voice.listening ? "Stop listening" : "Speak"}
+              >
+                {voice.listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </button>
+            )}
           </div>
         </div>
       </div>
