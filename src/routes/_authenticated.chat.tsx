@@ -4,9 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { sendChatMessage, type ConversationAnalysis } from "@/lib/chat.functions";
-import { Send, Loader2, Sparkles, Plus, Bot, User as UserIcon } from "lucide-react";
+import { Send, Loader2, Sparkles, Plus, Bot, User as UserIcon, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 import { ScorePill } from "./_authenticated.dashboard";
+import { useVoiceAgent } from "@/lib/voice-agent";
 
 export const Route = createFileRoute("/_authenticated/chat")({
   component: ChatPage,
@@ -35,7 +36,16 @@ function ChatPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<ConversationAnalysis | null>(null);
+  const [voiceMode, setVoiceMode] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleVoiceTranscript = (text: string) => {
+    setInput(text);
+    // Auto-send when in voice mode
+    setTimeout(() => sendWithText(text), 50);
+  };
+
+  const voice = useVoiceAgent({ onTranscript: handleVoiceTranscript, enabled: voiceMode });
 
   // Load conversations
   useEffect(() => {
@@ -73,17 +83,17 @@ function ChatPage() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
-  const handleSend = async () => {
-    const text = input.trim();
-    if (!text || loading) return;
+  const sendWithText = async (text: string) => {
+    const clean = text.trim();
+    if (!clean || loading) return;
     setInput("");
-    const optimistic: UIMessage = { id: "tmp-" + Date.now(), role: "user", content: text };
+    const optimistic: UIMessage = { id: "tmp-" + Date.now(), role: "user", content: clean };
     setMessages((m) => [...m, optimistic]);
     setLoading(true);
 
     try {
       const history = messages.map((m) => ({ role: m.role, content: m.content }));
-      const res = await send({ data: { conversationId: activeId, message: text, history } });
+      const res = await send({ data: { conversationId: activeId, message: clean, history } });
 
       if ("error" in res) {
         toast.error(res.error);
@@ -95,10 +105,16 @@ function ChatPage() {
       setActiveId(newConvId);
       setMessages((m) => [
         ...m.filter((x) => x.id !== optimistic.id),
-        { id: "u-" + Date.now(), role: "user", content: text },
+        { id: "u-" + Date.now(), role: "user", content: clean },
         { id: "a-" + Date.now(), role: "assistant", content: res.reply },
       ]);
       if (res.analysis) setAnalysis(res.analysis);
+
+      // Speak reply in voice mode, then re-open the mic
+      if (voiceMode && voice.supported) {
+        await voice.speak(res.reply);
+        voice.startListening();
+      }
 
       // Refresh conversation list
       const { data } = await supabase
@@ -113,6 +129,8 @@ function ChatPage() {
       setLoading(false);
     }
   };
+
+  const handleSend = () => sendWithText(input);
 
   const newChat = () => {
     setActiveId(null);
@@ -161,10 +179,34 @@ function ChatPage() {
           <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-primary to-accent">
             <Sparkles className="h-4 w-4 text-white" />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="font-semibold leading-none">Sellora AI</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">Live · Gemini-powered</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {voiceMode ? (voice.listening ? "Listening…" : voice.speaking ? "Speaking…" : "Voice mode · ready") : "Live · Gemini-powered"}
+            </p>
           </div>
+          {voice.supported && (
+            <button
+              onClick={() => {
+                const next = !voiceMode;
+                setVoiceMode(next);
+                if (!next) {
+                  voice.stopListening();
+                  voice.cancel();
+                }
+              }}
+              className={
+                "rounded-lg px-3 py-1.5 text-xs inline-flex items-center gap-1.5 transition " +
+                (voiceMode
+                  ? "bg-gradient-to-r from-primary to-accent text-white"
+                  : "bg-white/5 text-muted-foreground hover:text-foreground")
+              }
+              title={voiceMode ? "Disable voice mode" : "Enable voice sales agent"}
+            >
+              {voiceMode ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+              Voice
+            </button>
+          )}
         </header>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
@@ -247,6 +289,19 @@ function ChatPage() {
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>
+            {voice.supported && voiceMode && (
+              <button
+                onClick={() => (voice.listening ? voice.stopListening() : voice.startListening())}
+                disabled={loading || voice.speaking}
+                className={
+                  "rounded-xl px-4 text-white disabled:opacity-40 " +
+                  (voice.listening ? "bg-destructive animate-pulse" : "bg-white/10 hover:bg-white/20")
+                }
+                title={voice.listening ? "Stop listening" : "Speak"}
+              >
+                {voice.listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </button>
+            )}
           </div>
         </div>
       </div>

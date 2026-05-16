@@ -159,6 +159,8 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          avg_deal_value: number | null
+          business_context: string | null
           business_name: string | null
           created_at: string
           email: string | null
@@ -169,6 +171,8 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          avg_deal_value?: number | null
+          business_context?: string | null
           business_name?: string | null
           created_at?: string
           email?: string | null
@@ -179,6 +183,8 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          avg_deal_value?: number | null
+          business_context?: string | null
           business_name?: string | null
           created_at?: string
           email?: string | null

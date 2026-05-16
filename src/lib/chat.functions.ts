@@ -4,7 +4,7 @@ import { generateText, Output } from "ai";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createLovableAiGatewayProvider } from "./ai-gateway";
 
-const SALES_SYSTEM = `You are Sellora AI — an autonomous AI sales operator with deep psychological intelligence. You don't just chat; you adapt your sales strategy in real time to the customer's personality and emotional state.
+const BASE_SYSTEM = `You are Sellora AI — an autonomous AI sales operator with deep psychological intelligence. You don't just chat; you adapt your sales strategy in real time to the customer's personality and emotional state.
 
 Adaptive playbook (pick + blend dynamically):
 - Hesitant / skeptical → trust_building: cite specifics, social proof, lower commitment.
@@ -23,6 +23,11 @@ Behaviour:
 - Keep replies tight (2–5 short paragraphs). Use short bullet lists only when comparing options.
 - Match the customer's language automatically (English, Hindi, Tamil, etc.).
 - Always propose a clear next step (book a call, see a demo, place the order, share contact).`;
+
+function buildSystemPrompt(businessContext: string | null, businessName: string | null) {
+  if (!businessContext?.trim()) return BASE_SYSTEM;
+  return `${BASE_SYSTEM}\n\n=== YOUR BUSINESS CONTEXT ===\nYou represent ${businessName ?? "this business"}. Use ONLY the products, services, pricing, and policies below. If a customer asks about something not listed, say it's not currently offered and pivot to what is.\n\n${businessContext.trim()}\n=== END BUSINESS CONTEXT ===`;
+}
 
 const ANALYSIS_SCHEMA = z.object({
   lead_score: z.number().min(0).max(100).describe("Overall purchase likelihood 0-100"),
@@ -89,6 +94,14 @@ export const sendChatMessage = createServerFn({ method: "POST" })
     const gateway = createLovableAiGatewayProvider(apiKey);
     const model = gateway("google/gemini-2.5-flash");
 
+    // Load business context so the AI sells *this* business, not generic products
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("business_context, business_name")
+      .eq("id", userId)
+      .maybeSingle();
+    const systemPrompt = buildSystemPrompt(profile?.business_context ?? null, profile?.business_name ?? null);
+
     // Ensure conversation exists
     let conversationId = data.conversationId;
     if (!conversationId) {
@@ -122,7 +135,7 @@ export const sendChatMessage = createServerFn({ method: "POST" })
     try {
       const { text } = await generateText({
         model,
-        system: SALES_SYSTEM,
+        system: systemPrompt,
         messages: [
           ...data.history.map((m) => ({ role: m.role, content: m.content })),
           { role: "user" as const, content: data.message },
