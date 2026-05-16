@@ -83,17 +83,17 @@ function ChatPage() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
-  const handleSend = async () => {
-    const text = input.trim();
-    if (!text || loading) return;
+  const sendWithText = async (text: string) => {
+    const clean = text.trim();
+    if (!clean || loading) return;
     setInput("");
-    const optimistic: UIMessage = { id: "tmp-" + Date.now(), role: "user", content: text };
+    const optimistic: UIMessage = { id: "tmp-" + Date.now(), role: "user", content: clean };
     setMessages((m) => [...m, optimistic]);
     setLoading(true);
 
     try {
       const history = messages.map((m) => ({ role: m.role, content: m.content }));
-      const res = await send({ data: { conversationId: activeId, message: text, history } });
+      const res = await send({ data: { conversationId: activeId, message: clean, history } });
 
       if ("error" in res) {
         toast.error(res.error);
@@ -105,10 +105,16 @@ function ChatPage() {
       setActiveId(newConvId);
       setMessages((m) => [
         ...m.filter((x) => x.id !== optimistic.id),
-        { id: "u-" + Date.now(), role: "user", content: text },
+        { id: "u-" + Date.now(), role: "user", content: clean },
         { id: "a-" + Date.now(), role: "assistant", content: res.reply },
       ]);
       if (res.analysis) setAnalysis(res.analysis);
+
+      // Speak reply in voice mode, then re-open the mic
+      if (voiceMode && voice.supported) {
+        await voice.speak(res.reply);
+        voice.startListening();
+      }
 
       // Refresh conversation list
       const { data } = await supabase
@@ -123,6 +129,8 @@ function ChatPage() {
       setLoading(false);
     }
   };
+
+  const handleSend = () => sendWithText(input);
 
   const newChat = () => {
     setActiveId(null);
