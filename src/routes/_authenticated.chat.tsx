@@ -179,10 +179,34 @@ function ChatPage() {
           <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-primary to-accent">
             <Sparkles className="h-4 w-4 text-white" />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="font-semibold leading-none">Sellora AI</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">Live · Gemini-powered</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {voiceMode ? (voice.listening ? "Listening…" : voice.speaking ? "Speaking…" : "Voice mode · ready") : "Live · Gemini-powered"}
+            </p>
           </div>
+          {voice.supported && (
+            <button
+              onClick={() => {
+                const next = !voiceMode;
+                setVoiceMode(next);
+                if (!next) {
+                  voice.stopListening();
+                  voice.cancel();
+                }
+              }}
+              className={
+                "rounded-lg px-3 py-1.5 text-xs inline-flex items-center gap-1.5 transition " +
+                (voiceMode
+                  ? "bg-gradient-to-r from-primary to-accent text-white"
+                  : "bg-white/5 text-muted-foreground hover:text-foreground")
+              }
+              title={voiceMode ? "Disable voice mode" : "Enable voice sales agent"}
+            >
+              {voiceMode ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+              Voice
+            </button>
+          )}
         </header>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
