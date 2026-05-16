@@ -36,7 +36,16 @@ function ChatPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<ConversationAnalysis | null>(null);
+  const [voiceMode, setVoiceMode] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleVoiceTranscript = (text: string) => {
+    setInput(text);
+    // Auto-send when in voice mode
+    setTimeout(() => sendWithText(text), 50);
+  };
+
+  const voice = useVoiceAgent({ onTranscript: handleVoiceTranscript, enabled: voiceMode });
 
   // Load conversations
   useEffect(() => {
