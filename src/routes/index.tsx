@@ -121,14 +121,14 @@ function Hero() {
         >
           <Link
             to="/signup"
-            className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-6 py-3 text-sm font-medium text-white shadow-xl shadow-primary/30 hover:shadow-primary/50 transition-all"
+            className="btn-shimmer group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-6 py-3 text-sm font-medium text-white shadow-xl shadow-primary/30 hover:shadow-primary/50 transition-all hover:scale-[1.03]"
           >
             Start free trial
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
             to="/login"
-            className="inline-flex items-center gap-2 rounded-xl glass px-6 py-3 text-sm font-medium hover:bg-white/10 transition"
+            className="hover-glow inline-flex items-center gap-2 rounded-xl glass px-6 py-3 text-sm font-medium hover:bg-white/10 transition"
           >
             Sign in
           </Link>
