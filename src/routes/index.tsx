@@ -80,6 +80,10 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative overflow-hidden">
+      {/* Floating decorative orbs */}
+      <div className="orb h-72 w-72 bg-primary/40 top-20 -left-20" style={{ animationDelay: "0s" }} />
+      <div className="orb h-96 w-96 bg-accent/30 top-40 -right-32" style={{ animationDelay: "-4s" }} />
+      <div className="orb h-64 w-64 bg-chart-5/30 bottom-10 left-1/3" style={{ animationDelay: "-8s" }} />
       <div className="mx-auto max-w-7xl px-6 pt-24 pb-32 text-center">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -117,14 +121,14 @@ function Hero() {
         >
           <Link
             to="/signup"
-            className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-6 py-3 text-sm font-medium text-white shadow-xl shadow-primary/30 hover:shadow-primary/50 transition-all"
+            className="btn-shimmer group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-6 py-3 text-sm font-medium text-white shadow-xl shadow-primary/30 hover:shadow-primary/50 transition-all hover:scale-[1.03]"
           >
             Start free trial
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
             to="/login"
-            className="inline-flex items-center gap-2 rounded-xl glass px-6 py-3 text-sm font-medium hover:bg-white/10 transition"
+            className="hover-glow inline-flex items-center gap-2 rounded-xl glass px-6 py-3 text-sm font-medium hover:bg-white/10 transition"
           >
             Sign in
           </Link>

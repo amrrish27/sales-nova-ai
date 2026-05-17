@@ -49,7 +49,7 @@
   --radius: 0.875rem;
 
   /* Deep violet/cyan dark glass system */
-  --background: oklch(0.16 0.03 280);
+  --background: oklch(0.13 0.035 278);
   --foreground: oklch(0.98 0.005 280);
 
   --card: oklch(0.21 0.03 280);
@@ -114,9 +114,44 @@
     -webkit-font-smoothing: antialiased;
   }
   body {
-    background-image: var(--gradient-mesh);
-    background-attachment: fixed;
+    position: relative;
     min-height: 100vh;
+    background-color: var(--color-background);
+    background-image:
+      radial-gradient(ellipse 80% 60% at 15% -10%, oklch(0.68 0.22 295 / 0.35), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 90% 10%, oklch(0.78 0.16 210 / 0.28), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, oklch(0.7 0.2 340 / 0.22), transparent 65%),
+      radial-gradient(ellipse 60% 40% at 100% 70%, oklch(0.65 0.2 260 / 0.18), transparent 60%);
+    background-attachment: fixed;
+    background-size: 100% 100%;
+  }
+  /* Animated aurora layer */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -20%;
+    z-index: -2;
+    background:
+      radial-gradient(circle at 20% 30%, oklch(0.68 0.22 295 / 0.35), transparent 35%),
+      radial-gradient(circle at 80% 70%, oklch(0.78 0.16 210 / 0.3), transparent 40%),
+      radial-gradient(circle at 50% 50%, oklch(0.7 0.2 340 / 0.2), transparent 45%);
+    filter: blur(60px);
+    animation: aurora 22s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  /* Subtle grid + noise overlay */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(oklch(1 0 0 / 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(1 0 0 / 0.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+    pointer-events: none;
   }
   ::selection { background: oklch(0.68 0.22 295 / 0.4); }
 }
@@ -127,6 +162,16 @@
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
     border: 1px solid oklch(1 0 0 / 0.08);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+                background 0.4s ease,
+                border-color 0.4s ease,
+                box-shadow 0.4s ease;
+  }
+  .glass:hover {
+    background: oklch(1 0 0 / 0.07);
+    border-color: oklch(0.68 0.22 295 / 0.35);
+    box-shadow: 0 20px 60px -20px oklch(0.68 0.22 295 / 0.35);
+    transform: translateY(-2px);
   }
   .glass-strong {
     background: oklch(1 0 0 / 0.07);
@@ -135,10 +180,16 @@
     border: 1px solid oklch(1 0 0 / 0.1);
   }
   .gradient-text {
-    background: var(--gradient-primary);
+    background: linear-gradient(120deg,
+      oklch(0.78 0.16 210) 0%,
+      oklch(0.68 0.22 295) 40%,
+      oklch(0.75 0.2 340) 80%,
+      oklch(0.78 0.16 210) 100%);
+    background-size: 220% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: shimmer-text 8s linear infinite;
   }
   .gradient-border {
     position: relative;
@@ -156,10 +207,98 @@
     pointer-events: none;
   }
   .glow { box-shadow: var(--shadow-glow); }
+
+  /* Interactive hover utilities */
+  .hover-lift {
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 50px -20px oklch(0.68 0.22 295 / 0.5);
+  }
+  .hover-glow {
+    transition: box-shadow 0.4s ease, transform 0.3s ease;
+  }
+  .hover-glow:hover {
+    box-shadow: 0 0 0 1px oklch(0.68 0.22 295 / 0.5),
+                0 0 40px -5px oklch(0.78 0.16 210 / 0.6);
+  }
+
+  /* Animated gradient button shimmer */
+  .btn-shimmer {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, oklch(1 0 0 / 0.25) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.9s ease;
+    pointer-events: none;
+  }
+  .btn-shimmer:hover::after { transform: translateX(120%); }
+
+  /* Floating orbs decoration */
+  .orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(60px);
+    opacity: 0.5;
+    pointer-events: none;
+    animation: float 14s ease-in-out infinite;
+  }
 }
 
+/* === Keyframes === */
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 20px -5px oklch(0.68 0.22 295 / 0.6); }
   50% { box-shadow: 0 0 40px -5px oklch(0.78 0.16 210 / 0.7); }
 }
+@keyframes aurora {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  50%  { transform: translate3d(-3%, 2%, 0) rotate(8deg) scale(1.08); }
+  100% { transform: translate3d(2%, -3%, 0) rotate(-6deg) scale(1.05); }
+}
+@keyframes shimmer-text {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 220% 50%; }
+}
+@keyframes float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -24px, 0); }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes glow-ring {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.68 0.22 295 / 0.5); }
+  50%      { box-shadow: 0 0 0 14px oklch(0.68 0.22 295 / 0); }
+}
+
 .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+.animate-fade-in-up { animation: fade-in-up 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.animate-scale-in   { animation: scale-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.animate-slide-in-right { animation: slide-in-right 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.animate-glow-ring  { animation: glow-ring 2.4s ease-out infinite; }
+
+/* Respect user preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
