@@ -80,6 +80,10 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative overflow-hidden">
+      {/* Floating decorative orbs */}
+      <div className="orb h-72 w-72 bg-primary/40 top-20 -left-20" style={{ animationDelay: "0s" }} />
+      <div className="orb h-96 w-96 bg-accent/30 top-40 -right-32" style={{ animationDelay: "-4s" }} />
+      <div className="orb h-64 w-64 bg-chart-5/30 bottom-10 left-1/3" style={{ animationDelay: "-8s" }} />
       <div className="mx-auto max-w-7xl px-6 pt-24 pb-32 text-center">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
